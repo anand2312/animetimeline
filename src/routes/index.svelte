@@ -65,23 +65,25 @@
 <div class="p-1 m-1 grid grid-cols-1 justify-center justify-items-center">
 {#each timeline as entry}
     {#if entry.type == "year"}
-        <h2 class="font-sans text-2xl p-1">{entry.data}</h2>
-        <hr>
+        <section><h2 class="font-sans text-2xl p-1">{entry.data}</h2></section>
+        <hr class="py-1 w-10/12">
     {/if}
     {#if entry.type == "month"}
         <h3 class="font-sans text-xl p-1 decoration-current">{months[entry.data]}</h3>
+        <hr class="py-1 w-3/4">
     {/if}
     {#if entry.type == "anime"}
-    <div class="card lg:card-side bg-base-100 shadow-xl p-1 m-1 max-w-5xl min-w-5xl">
-        <figure><img src={entry.data.media.coverImage.large} alt="Anime banner" /></figure>
+    <div class="card bg-base-100 shadow-xl p-1 m-1 image-full max-w-5xl min-w-5xl">
+        <figure><img class="rounded-3xl" src={entry.data.media.bannerImage} alt="Anime banner" /></figure>
         <div class="card-body max-w-5 min-w-5 max-w-3xl min-w-min">
             <h2 class="card-title">
-                <div class="tooltip tooltip-secondary tooltip-bottom" data-tip="{getAnimeNames(entry.data.media.title)}">
+                <div class="tooltip tooltip-secondary tooltip-bottom lg:tooltip-right" data-tip="{getAnimeNames(entry.data.media.title)}">
                     <a href="https://anilist.co/anime/{entry.data.media.id}" class="hover:text-accent">{entry.data.media.title.userPreferred}</a>
                 </div>
             </h2>
             <p><span class="font-bold">Started on: </span>{getDateString(entry.data.startedAt)}</p>
             <p><span class="font-bold">Finished on: </span>{getDateString(entry.data.completedAt)}</p>
+            <p><span class="font-bold">Episodes: </span>{entry.data.media.episodes}</p>
             <p><span class="font-bold">Score: </span>{entry.data.score}</p>
             <p>{@html entry.data.media.description + "</i>"}</p>
         </div>

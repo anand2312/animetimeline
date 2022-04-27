@@ -45,6 +45,7 @@ export interface Media {
 		medium: string,
     large: string,
 	};
+  bannerImage: string;
 }
 
 export const query = `query {
@@ -61,10 +62,12 @@ export const query = `query {
               userPreferred
             }
             description
+            episodes
             coverImage {
               medium
               large
             }
+            bannerImage
           }
           score
           private
