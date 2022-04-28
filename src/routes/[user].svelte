@@ -33,6 +33,10 @@
     }
 
     function getDateString({year, month, day}: {year: number, month: number, day: number}): string {
+        if (!year || !month || !day) {
+            return "-";
+        }
+
         const dt = DateTime.local(year, month, day);
         return dt.toLocaleString({ month: "long", day: "numeric", year: "numeric"});
     }
@@ -45,7 +49,7 @@
 
 <svelte:head>
 	<meta property="og:title" content="{username}'s' anime timeline" />
-	<meta property="og:description" content="what'd you watch since january 2022?" />
+	<meta property="og:description" content="what've they been watching?" />
     <meta property="og:image" content={avatar.medium} />
     <title>anime timeline</title>
 </svelte:head>
@@ -63,11 +67,11 @@
 
 
 {#each timeline as entry}
-    {#if entry.type == "year"}
+    {#if entry.type == "year" && entry.data}
         <section><h2 class="font-sans text-2xl p-1">{entry.data}</h2></section>
         <hr class="py-1 w-10/12">
     {/if}
-    {#if entry.type == "month"}
+    {#if entry.type == "month" && entry.data}
         <h3 class="font-sans text-xl p-1 decoration-current">{months[entry.data]}</h3>
         <hr class="py-1 w-3/4">
     {/if}

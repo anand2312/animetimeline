@@ -76,7 +76,7 @@ export const userSearchQuery = `query ($search: String) {
 }`
 
 export const timelineQuery = `query ($uid: Int) {
-    MediaListCollection(userId: $uid, forceSingleCompletedList: true, type: ANIME, status: COMPLETED, startedAt_greater: 20211231, sort: STARTED_ON) {
+    MediaListCollection(userId: $uid, forceSingleCompletedList: true, type: ANIME, status: COMPLETED, sort: STARTED_ON) {
       lists {
         name
         isCustomList

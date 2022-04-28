@@ -17,7 +17,7 @@ export async function get({ params }) {
         })
     });
     let data = await res.json();
-
+    console.log(data);
     if (data.errors) {
         console.log(data.errors);
         return {

@@ -13,6 +13,11 @@
     }
 </script>
 
+<svelte:head>
+    <meta property="og:title" content="anime timeline" />
+	<meta property="og:description" content="measure your degeneracy" />
+</svelte:head>
+
 <main class="h-screen flex flex-col" data-theme={dark ? "night" : "lofi"}>
     <div class="grid grid-cols-1 p-3 m-3 gap-3 content-center justify-items-center">
         <div class="flex flex-row py-1">
