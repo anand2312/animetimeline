@@ -58,12 +58,20 @@ export interface UserQueryResponse {
 export interface User {
   id: number;
   name: string;
+  avatar: {
+    large: string,
+    medium: string,
+  }
 }
 
 export const userSearchQuery = `query ($search: String) {
   User(search: $search) {
     id
     name
+    avatar {
+      large
+      medium
+    }
   }
 }`
 

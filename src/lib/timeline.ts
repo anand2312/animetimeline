@@ -1,4 +1,4 @@
-import type { QueryResult, AnimeHistoryListEntry } from './graphql';
+import type { TimelineQueryResponse, AnimeHistoryListEntry } from './graphql';
 
 export interface DateEntry {
 	type: 'month' | 'year'
@@ -10,40 +10,57 @@ export interface AnimeEntry {
     data: AnimeHistoryListEntry;
 }
 
-export function formTimeline(data: QueryResult): (DateEntry | AnimeEntry)[] {
-	let curYear = 2022;
-	let curMonth = 1;
-	const out = new Array<DateEntry | AnimeEntry>();
+function groupBy<T>(list: T[], keyGetter: (i: T) => any): Map<any, T[]> {
+    const map = new Map();
+    list.forEach((item) => {
+         const key = keyGetter(item);
+         const collection = map.get(key);
+         if (!collection) {
+             map.set(key, [item]);
+         } else {
+             collection.push(item);
+         }
+    });
+    return map;
+}
 
-	out.push({ type: 'year', data: curYear });
-	out.push({ type: 'month', data: curMonth });
+export function formTimeline(data: TimelineQueryResponse): (DateEntry | AnimeEntry)[] {
+	const groups = groupBy(data["data"]["MediaListCollection"]["lists"][0]["entries"], i => `${i.startedAt.month}-${i.startedAt.year}`);
+	let curYear = data["data"]["MediaListCollection"]["lists"][0]["entries"][0]["startedAt"]["year"];
+	let curMonth =  data["data"]["MediaListCollection"]["lists"][0]["entries"][0]["startedAt"]["month"];
 
-	for (const entry of data['data']['MediaListCollection']['lists'][0]['entries']) {
-        if (entry.private) {
-            continue
-        }
-    
-		const { year, month } = entry['completedAt'];
+	const out: (DateEntry | AnimeEntry)[] = [];
+	
+	out.push({type: 'year', data: curYear});
 
-		if (month > curMonth) {
-			out.push({ type: 'month', data: month });
-			out.push({ type: 'anime', data: entry });
-			curMonth = month;
-			continue;
-		}
-
-		if (year > curYear) {
-			out.push({ type: 'year', data: year });
-			out.push({ type: 'month', data: 1 });
-			out.push({ type: 'anime', data: entry });
-			curYear = year;
-			continue;
-		}
-
-		out.push({ type: 'anime', data: entry });
+	for (let i = 1; i < curMonth; i++) {
+		out.push({type: "month", data: i});
 	}
 
-	out.reverse(); // the list was in ascending order since jan 1 2022;
-	// for easy rendering, we reverse it, so that the latest anime comes first (at the top)
+	for (const [key, entries] of groups.entries()) {
+		let [month, year] = key.split("-");
+		month = parseInt(month);
+		year = parseInt(year);
+
+		if (year != curYear) {
+			out.push({type: 'year', data: year});
+			curYear = year;
+		}
+
+		if (month > curMonth) {
+			for (let i = curMonth + 1; i < month; i++) {
+				out.push({type: "month", data: i});
+			}
+		}
+
+		out.push({type: 'month', data: month});
+		curMonth = month;
+
+		for (const entry of entries) {
+			out.push({type: 'anime', data: entry});
+		}
+	}
+
+	out.reverse(); // the graphql query had sorted in ascending order; reverse before rendering
 	return out;
 }

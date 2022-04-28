@@ -1,62 +1,10 @@
-<script context="module" lang="ts">
-    import { userSearchQuery, timelineQuery, type UserQueryResponse, type TimelineQueryResponse } from "$lib/graphql";
-    import { formTimeline } from "$lib/timeline";
-
-    /** @type {import('./[user]').Load} */
-    export async function load({ params, fetch }) {
-        // first, search if the user exists on anilist
-        let res = await fetch("https://graphql.anilist.co", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({
-                query: userSearchQuery,
-                variables: {"search": params.user}
-            })
-        });
-        let data = await res.json();
-
-        if (data.errors) {
-            return {
-                status: 302,
-                redirect: "/404"
-            }
-        } else {
-            data = data as UserQueryResponse;
-        }
-
-        const { id, name } = data["data"]["User"];
-
-        res = await fetch("https://graphql.anilist.co", {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({query: timelineQuery, variables: {"uid": id}})
-        });
-        data = await res.json() as TimelineQueryResponse;
-        const timeline = formTimeline(data);
-
-        return {
-            status: 200,
-            props: {
-                username: name,
-                timeline: timeline
-            }
-        }
-    }
-</script>
-
-
 <script lang="ts">
     import type { DateEntry, AnimeEntry } from "$lib/timeline";
     import { isDark } from "$lib/stores";
     import { DateTime } from "luxon";
 
     export let username: string;
+    export let avatar: {large: string, medium: string};
     export let timeline: (DateEntry | AnimeEntry)[];
 
     let dark: boolean;
@@ -94,6 +42,13 @@
     }
 </script>
 
+
+<svelte:head>
+	<meta property="og:title" content="{username}'s' anime timeline" />
+	<meta property="og:description" content="what'd you watch since january 2022?" />
+    <meta property="og:image" content={avatar.medium} />
+    <title>anime timeline</title>
+</svelte:head>
 
 
 <main data-theme={dark ? "night" : "lofi"}>
