@@ -58,7 +58,7 @@
 <main data-theme={dark ? "night" : "lofi"}>
 <div class="p-1 m-1 grid grid-cols-1 justify-center justify-items-center">
     <div class="flex flex-row justify-center w-max py-5">
-        <h1 class="font-sans font-bold text-3xl md:text-4xl basis-10/12 w-fit"><span class="hover:text-pink-400">{username}'s</span> anime timeline</h1>
+        <h1 class="font-sans font-bold text-3xl md:text-4xl basis-10/12 w-fit"><a href="https://anilist.co/user/{username}" class="hover:text-pink-400">{username}'s</span> anime timeline</h1>
         <button on:click={toggleDarkMode}>
             <img src="lighticon.svg" class="basis-2/12 align-middle w-5 h-5 {dark ? '' : 'hidden'}" alt="lightmode icon">
             <img src="darkicon.svg" class="basis-2/12 align-middle w-5 h-5 {dark ? 'hidden' : ''}" alt="darkmode icon">
