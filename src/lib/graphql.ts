@@ -1,4 +1,4 @@
-export interface QueryResult {
+export interface TimelineQueryResponse {
 	data: {
     MediaListCollection: MediaListCollection
   }
@@ -48,8 +48,27 @@ export interface Media {
   bannerImage: string;
 }
 
-export const query = `query {
-    MediaListCollection(userId: 5405631, forceSingleCompletedList: true, type: ANIME, status: COMPLETED, startedAt_greater: 20211231, sort: STARTED_ON) {
+
+export interface UserQueryResponse {
+  data: {
+    User: User
+  }
+}
+
+export interface User {
+  id: number;
+  name: string;
+}
+
+export const userSearchQuery = `query ($search: String) {
+  User(search: $search) {
+    id
+    name
+  }
+}`
+
+export const timelineQuery = `query ($uid: Int) {
+    MediaListCollection(userId: $uid, forceSingleCompletedList: true, type: ANIME, status: COMPLETED, startedAt_greater: 20211231, sort: STARTED_ON) {
       lists {
         name
         isCustomList
